@@ -1,0 +1,11 @@
+framework module SelfieCapture {
+  umbrella header "SelfieCapture.h"
+
+  export *
+  module * { export * }
+}
+
+module SelfieCapture.Swift {
+    header "SelfieCapture-Swift.h"
+    requires objc
+}

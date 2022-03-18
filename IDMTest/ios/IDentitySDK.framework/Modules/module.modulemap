@@ -1,0 +1,11 @@
+framework module IDentitySDK {
+  umbrella header "IDentitySDK.h"
+
+  export *
+  module * { export * }
+}
+
+module IDentitySDK.Swift {
+    header "IDentitySDK-Swift.h"
+    requires objc
+}
