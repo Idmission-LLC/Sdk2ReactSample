@@ -9,12 +9,10 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.idmission.sdk2.capture.IdMissionCaptureLauncher;
 import com.idmission.sdk2.capture.presentation.camera.helpers.ProcessedCapture;
-import com.idmission.sdk2.client.model.AdditionalCustomerFlagData;
 import com.idmission.sdk2.client.model.CommonApiResponse;
 import com.idmission.sdk2.client.model.ExtractedIdData;
 import com.idmission.sdk2.client.model.ExtractedPersonalData;
@@ -22,21 +20,18 @@ import com.idmission.sdk2.client.model.HostDataResponse;
 import com.idmission.sdk2.client.model.InitializeResponse;
 import com.idmission.sdk2.client.model.Response;
 import com.idmission.sdk2.client.model.ResponseCustomerData;
-import com.idmission.sdk2.client.model.SendInputImagesInPost;
-import com.idmission.sdk2.client.model.SendProcessedImagesInPost;
 import com.idmission.sdk2.identityproofing.IdentityProofingSDK;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class IDMissionSDK extends ReactContextBaseJavaModule implements ActivityEventListener {
-    String initializeApiBaseUrl = "https://demo.idmission.com/";
-    String apiBaseUrl = "https://apidemo.idmission.com/";
-    String loginID = "";
-    String password = "";
-    long merchantID = 0;
+    String InitializeApiBaseUrl = "https://demo.idmission.com/";
+    String ApiBaseUrl = "https://apidemo.idmission.com/";
+    String LoginID = "";
+    String Password = "";
+    long MerchantID = 0;
     private List<ProcessedCapture> processedCaptures = new ArrayList<>();
     private IdMissionCaptureLauncher launcher = new IdMissionCaptureLauncher();
     ReactApplicationContext reactContext;
@@ -54,7 +49,22 @@ public class IDMissionSDK extends ReactContextBaseJavaModule implements Activity
     }
 
     @ReactMethod
-    public void  initializeSDK(String url, String loginID, String password,Callback callBack) {
+    public void  initializeSDK(String initializeURL, String url, String loginID, String password, String merchantID) {
+        if(!StringUtils.isEmpty(initializeURL)){
+            InitializeApiBaseUrl = initializeURL;
+        }
+        if(!StringUtils.isEmpty(url)){
+            ApiBaseUrl = url;
+        }
+        if(!StringUtils.isEmpty(loginID)){
+            LoginID = loginID;
+        }
+        if(!StringUtils.isEmpty(password)){
+            Password = password;
+        }
+        if(!StringUtils.isEmpty(merchantID)){
+            MerchantID = Long.parseLong(merchantID);
+        }
         new BackgroundTask().execute();
     }
 
@@ -118,12 +128,12 @@ public class IDMissionSDK extends ReactContextBaseJavaModule implements Activity
         protected Response<InitializeResponse> doInBackground(Void... voids) {
             Response<InitializeResponse> response =
                     IdentityProofingSDK.INSTANCE.initialize(getReactApplicationContext().getCurrentActivity(),
-                            initializeApiBaseUrl,
-                            apiBaseUrl,
-                            loginID,
-                            password,
-                            merchantID,
-                            true,
+                            InitializeApiBaseUrl,
+                            ApiBaseUrl,
+                            LoginID,
+                            Password,
+                            MerchantID,
+                            false,
                             true);
             return response;
         }
