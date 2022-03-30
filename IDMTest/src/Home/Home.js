@@ -12,6 +12,8 @@ LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs(); 
 const { IDMissionSDK } = NativeModules;
 
+var initialize_url = "";
+var url = "";
 var login_id = "";
 var password = "";
 var merchant_id = "";
@@ -32,12 +34,11 @@ export default class Home extends React.Component {
     componentDidMount() {
 
         IDMissionSDK.initializeSDK(
+            initialize_url,
+            url,
             login_id,
             password,
-            merchant_id,
-            (eventId) => {
-                console.log("inside callback")
-            },
+            merchant_id
         );
 
         const eventEmitter = new NativeEventEmitter(IDMissionSDK);
