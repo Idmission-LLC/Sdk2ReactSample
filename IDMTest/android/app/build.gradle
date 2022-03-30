@@ -3,8 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlinx-serialization'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
 
 import com.android.build.OutputFile
 
@@ -151,10 +149,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    aaptOptions {
-        noCompress "tflite"
-    }
-
     packagingOptions {
         pickFirst '**/*.so'
     }
@@ -195,7 +189,7 @@ android {
                 checkReleaseBuilds false
                 abortOnError false
             }
-            minifyEnabled true
+            minifyEnabled false
             useProguard true
             debuggable false
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -227,7 +221,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.appcompat:appcompat:1.3.1"
-    implementation 'com.idmission.sdk2:idmission-sdk2:9.1.4.5'
+    implementation 'com.idmission.sdk2:idmission-sdk2:9.1.6.5'
 
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
