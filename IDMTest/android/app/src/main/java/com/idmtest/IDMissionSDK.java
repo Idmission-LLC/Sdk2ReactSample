@@ -3,6 +3,8 @@ package com.idmtest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Parcelable;
+
 import androidx.annotation.Nullable;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -169,9 +171,22 @@ public class IDMissionSDK extends ReactContextBaseJavaModule implements Activity
         if (data != null) {
             if (requestCode == IdMissionCaptureLauncher.CAPTURE_REQUEST_CODE) {
                 try{
-                    processedCaptures = launcher.processResult(data);
+                    Parcelable[] processedCaptures = data.getExtras().getParcelableArray(IdMissionCaptureLauncher.EXTRA_PROCESSED_CAPTURES);
+
+                    JSONObject jo = new JSONObject();
+                    jo.put("Image1", processedCaptures[0].toString());
+                    if(processedCaptures.length>1){
+                        jo.put("Image2", processedCaptures[1].toString());
+                    }
+                    if(processedCaptures.length>2){
+                        jo.put("Image3", processedCaptures[2].toString());
+                    }
+                    if(processedCaptures.length>3){
+                        jo.put("Image4", processedCaptures[3].toString());
+                    }
+
                     WritableMap params = Arguments.createMap();
-                    params.putString("data",processedCaptures.toString());
+                    params.putString("data",jo.toString());
                     sendEvent(getReactApplicationContext(), "DataCallback", params);
                 }catch(Exception e){
                     e.printStackTrace();
