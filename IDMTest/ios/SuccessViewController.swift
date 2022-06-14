@@ -6,25 +6,27 @@
 //
 
 import UIKit
-import IDentitySDK
+import IDentitySDK_Swift
+import IDCapture_Swift
+import SelfieCapture_Swift
 
 class SuccessViewController: UIViewController {
-    var customerValidateIdRequest: CustomerValidateIdRequest?                   // 20
-    var customerValidateIdFaceMatchRequest: CustomerValidateIdFaceMatchRequest? // 10
-    var customerEnrollRequest: CustomerEnrollRequest?                           // 50
-    var customerEnrollBiometricsRequest: CustomerEnrollBiometricsRequest?       // 175
-    var customerVerifyRequest: CustomerVerifyRequest?                           // 105
-    var customerIdentifyRequest: CustomerIdentifyRequest?                       // 185
-    var customerLiveCheckRequest: CustomerLiveCheckRequest?                     // 660
+    var validateIdResult: ValidateIdResult?                             // 20
+    var validateIdMatchFaceResult: ValidateIdMatchFaceResult?           // 10
+    var customerEnrollResult: CustomerEnrollResult?                     // 50
+    var customerEnrollBiometricsResult: CustomerEnrollBiometricsResult? // 175
+    var customerVerificationResult: CustomerVerificationResult?         // 105
+    var customerIdentifyResult: CustomerIdentifyResult?                 // 185
+    var liveFaceCheckResult: LiveFaceCheckResult?                       // 660
 
     var frontDetectedData: DetectedData?
     var backDetectedData: DetectedData?
 
-    var faceMatch: FaceMatchResult?
     var texts: String!
     var textObfuscated: String!
+    var mutableDictionary: NSMutableDictionary = [:]
   
-    override func viewDidLoad() {
+  override func viewDidLoad() {
         super.viewDidLoad()
       
         // pretty print the request object
@@ -32,30 +34,32 @@ class SuccessViewController: UIViewController {
         encoder.outputFormatting = .prettyPrinted
 
         // first make sure that the ID Front has been detected, if expected
-        if customerValidateIdRequest != nil ||
-            customerValidateIdFaceMatchRequest != nil ||
-            customerEnrollRequest != nil {
+        if validateIdResult != nil ||
+            validateIdMatchFaceResult != nil ||
+            customerEnrollResult != nil {
             guard frontDetectedData != nil else {
                 texts = "ERROR"
+                mutableDictionary["frontDetectedData"] = "ERROR"
+
                 return
             }
         }
       
-        if let customerValidateIdRequest = customerValidateIdRequest {
-            // make a copy of the request and stub out the base64 image text for logging
-            let request = customerValidateIdRequest
-          
-            var requestObfuscated = request
-            requestObfuscated.customerData.idData.idImageFront = "..."
-            if requestObfuscated.customerData.idData.idImageBack != nil {
-              requestObfuscated.customerData.idData.idImageBack = "..."
+        if let _ = validateIdResult, var request = IDentitySDK.customerValidateIdRequest {
+            // stub out the base64 image text for logging
+            request.customerData.idData.idImageFront = "..."
+            if request.customerData.idData.idImageBack != nil {
+                request.customerData.idData.idImageBack = "..."
             }
-            
+            let requestObfuscated = request
+          
             if let data = try? encoder.encode(request),
                let json = String(data: data, encoding: .utf8)  {
                 texts = json + "\n\n- - -\n\n"
+                mutableDictionary["validateIdResult"] = json
             } else {
                 texts = "ERROR"
+                mutableDictionary["validateIdResult"] = "ERROR"
             }
           
             if let dataObfuscated = try? encoder.encode(requestObfuscated),
@@ -64,40 +68,14 @@ class SuccessViewController: UIViewController {
             } else {
                 textObfuscated = "ERROR"
             }
-        } else if let customerValidateIdFaceMatchRequest = customerValidateIdFaceMatchRequest {
-            // make a copy of the request and stub out the base64 image texts for logging
-            let request = customerValidateIdFaceMatchRequest
-          
-            var requestObfuscated = request
-            requestObfuscated.customerData.idData.idImageFront = "..."
-            if requestObfuscated.customerData.idData.idImageBack != nil {
-              requestObfuscated.customerData.idData.idImageBack = "..."
+        } else if let _ = validateIdMatchFaceResult, var request = IDentitySDK.customerValidateIdFaceMatchRequest {
+            // stub out the base64 image texts for logging
+            request.customerData.idData.idImageFront = "..."
+            if request.customerData.idData.idImageBack != nil {
+                request.customerData.idData.idImageBack = "..."
             }
-            requestObfuscated.customerData.biometericData.selfie = "..."
-          
-            if let data = try? encoder.encode(request),
-               let json = String(data: data, encoding: .utf8)  {
-              texts = json + "\n\n- - -\n\n"
-            } else {
-                texts = "ERROR"
-            }
-          
-            if let dataObfuscated = try? encoder.encode(requestObfuscated),
-               let jsonObfuscated = String(data: dataObfuscated, encoding: .utf8)  {
-               textObfuscated = jsonObfuscated + "\n\n- - -\n\n"
-            } else {
-               textObfuscated = "ERROR"
-            }
-        } else if let customerEnrollRequest = customerEnrollRequest {
-            // make a copy of the request and stub out the base64 image text for logging
-            let request = customerEnrollRequest
-          
-            var requestObfuscated = request
-            requestObfuscated.customerData.idData.idImageFront = "..."
-            if requestObfuscated.customerData.idData.idImageBack != nil {
-              requestObfuscated.customerData.idData.idImageBack = "..."
-            }
-            requestObfuscated.customerData.biometericData.selfie = "..."
+            request.customerData.biometericData.selfie = "..."
+            let requestObfuscated = request
           
             if let data = try? encoder.encode(request),
                let json = String(data: data, encoding: .utf8)  {
@@ -112,18 +90,40 @@ class SuccessViewController: UIViewController {
             } else {
                 textObfuscated = "ERROR"
             }
-        } else if let customerEnrollBiometricsRequest = customerEnrollBiometricsRequest {
-            // make a copy of the request and stub out the base64 image text for logging
-            let request = customerEnrollBiometricsRequest
+        } else if let _ = customerEnrollResult, var request = IDentitySDK.customerEnrollRequest {
+            // stub out the base64 image text for logging
+            request.customerData.idData.idImageFront = "..."
+            if request.customerData.idData.idImageBack != nil {
+                request.customerData.idData.idImageBack = "..."
+            }
+            request.customerData.biometericData.selfie = "..."
+            let requestObfuscated = request
           
-            var requestObfuscated = request
-            requestObfuscated.customerData.biometericData.selfie = "..."
+            if let data = try? encoder.encode(request),
+               let json = String(data: data, encoding: .utf8)  {
+                texts = json + "\n\n- - -\n\n"
+            } else {
+                texts = "ERROR"
+            }
+          
+            if let dataObfuscated = try? encoder.encode(requestObfuscated),
+               let jsonObfuscated = String(data: dataObfuscated, encoding: .utf8)  {
+                textObfuscated = jsonObfuscated + "\n\n- - -\n\n"
+            } else {
+                textObfuscated = "ERROR"
+            }
+        } else if let _ = customerEnrollBiometricsResult, var request = IDentitySDK.customerEnrollBiometricsRequest {
+            // stub out the base64 image text for logging
+            request.customerData.biometericData.selfie = "..."
+            let requestObfuscated = request
           
             if let data = try? encoder.encode(request),
                let json = String(data: data, encoding: .utf8)  {
                 texts = json
+                mutableDictionary["customerEnrollBiometricsResult"] = json
             } else {
                 texts = "ERROR"
+                mutableDictionary["customerEnrollBiometricsResult"] = "ERROR"
             }
           
             if let dataObfuscated = try? encoder.encode(requestObfuscated),
@@ -132,18 +132,18 @@ class SuccessViewController: UIViewController {
             } else {
                 textObfuscated = "ERROR"
             }
-        } else if let customerVerifyRequest = customerVerifyRequest {
-            // make a copy of the request and stub out the base64 image text for logging
-            let request = customerVerifyRequest
-          
-            var requestObfuscated = request
-            requestObfuscated.customerData.biometericData.selfie = "..."
+        } else if let _ = customerVerificationResult, var request = IDentitySDK.customerVerifyRequest {
+            // stub out the base64 image text for logging
+            request.customerData.biometericData.selfie = "..."
+            let requestObfuscated = request
           
             if let data = try? encoder.encode(request),
                let json = String(data: data, encoding: .utf8)  {
                 texts = json
+                mutableDictionary["customerVerificationResult"] = json
             } else {
                 texts = "ERROR"
+                mutableDictionary["customerVerificationResult"] = "ERROR"
             }
           
             if let dataObfuscated = try? encoder.encode(requestObfuscated),
@@ -152,18 +152,18 @@ class SuccessViewController: UIViewController {
             } else {
                 textObfuscated = "ERROR"
             }
-        } else if let customerIdentifyRequest = customerIdentifyRequest {
-            // make a copy of the request and stub out the base64 image text for logging
-            let request = customerIdentifyRequest
-          
-            var requestObfuscated = request
-            requestObfuscated.biometericData.selfie = "..."
+        } else if let _ = customerIdentifyResult, var request = IDentitySDK.customerIdentifyRequest {
+            // stub out the base64 image text for logging
+            request.biometericData.selfie = "..."
+            let requestObfuscated = request
           
             if let data = try? encoder.encode(request),
                let json = String(data: data, encoding: .utf8)  {
                 texts = json
+                mutableDictionary["customerIdentifyResult"] = json
             } else {
                 texts = "ERROR"
+                mutableDictionary["customerIdentifyResult"] = "ERROR"
             }
           
             if let dataObfuscated = try? encoder.encode(requestObfuscated),
@@ -172,18 +172,18 @@ class SuccessViewController: UIViewController {
             } else {
                 textObfuscated = "ERROR"
             }
-        } else if let customerLiveCheckRequest = customerLiveCheckRequest {
-            // make a copy of the request and stub out the base64 image text for logging
-            let request = customerLiveCheckRequest
-          
-            var requestObfuscated = request
-            requestObfuscated.customerData.biometericData.selfie = "..."
+        } else if let _ = liveFaceCheckResult, var request = IDentitySDK.customerLiveCheckRequest {
+            // stub out the base64 image text for logging
+            request.customerData.biometericData.selfie = "..."
+            let requestObfuscated = request
           
             if let data = try? encoder.encode(request),
                let json = String(data: data, encoding: .utf8)  {
                 texts = json
+                mutableDictionary["liveFaceCheckResult"] = json
             } else {
                 texts = "ERROR"
+                mutableDictionary["liveFaceCheckResult"] = "ERROR"
             }
           
             if let dataObfuscated = try? encoder.encode(requestObfuscated),
@@ -195,7 +195,7 @@ class SuccessViewController: UIViewController {
         }
 
         guard let frontDetectedData = frontDetectedData else { return }
-        
+      
         display(detectedData: frontDetectedData, type: frontDetectedData.type ?? "UNKNOWN")
         if let backDetectedData = backDetectedData {
             texts += "\n\n"
@@ -212,13 +212,6 @@ class SuccessViewController: UIViewController {
             textObfuscated += "\n"
         }
       
-        guard let faceMatch = faceMatch else { return }
-        texts += "\n- - -\n\n"
-        texts += "Face Match Distance: \(faceMatch.distance)\n"
-        texts += "Face Matched?: \(faceMatch.isMatched ? "YES" : "NO")"
-        textObfuscated += "\n- - -\n\n"
-        textObfuscated += "Face Match Distance: \(faceMatch.distance)\n"
-        textObfuscated += "Face Matched?: \(faceMatch.isMatched ? "YES" : "NO")"
     }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -231,6 +224,27 @@ class SuccessViewController: UIViewController {
            var obfuscatedText = textObfuscated
            obfuscatedText = obfuscatedText?.replacingOccurrences(of: UserDefaults.defaultPassword, with: "", options: .literal, range: nil)
 
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+    
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: self.mutableDictionary, options: .prettyPrinted)
+                // here "jsonData" is the dictionary encoded in JSON data
+
+                let decoded = try JSONSerialization.jsonObject(with: jsonData, options: [])
+                // here "decoded" is of type `Any`, decoded from JSON data
+
+                // you can now cast it with the right type
+                if let dictFromJSON = decoded as? [String:String] {
+                    // use dictFromJSON
+                  let dict2:NSMutableDictionary? = ["data" : dictFromJSON]
+                  obfuscatedText = dict2?.description
+                  obfuscatedText = obfuscatedText?.replacingOccurrences(of: UserDefaults.defaultPassword, with: "", options: .literal, range: nil)
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+    
            let alertController = UIAlertController(title: "Extracted Data", message: obfuscatedText, preferredStyle: .alert)
            let OKAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
                alertController.dismiss(animated: true, completion: nil)
@@ -262,8 +276,86 @@ class SuccessViewController: UIViewController {
         spinner.startAnimating()
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: spinner)
 
-        if let request = customerValidateIdRequest {
-            IDentitySDK.submit(customerValidateIdRequest: request) { result in
+        if let validateIdResult = validateIdResult {
+            validateIdResult.submit { result, hostData in
+                self.navigationItem.leftBarButtonItem = nil
+
+                switch result {
+                case .success(let response):
+                    var hostDataString = ""
+                    if let hostData = hostData,
+                       let data = try? JSONSerialization.data(withJSONObject: hostData, options: [.prettyPrinted]),
+                       let json = String(data: data, encoding: .utf8) {
+                        hostDataString = "Host Data:\n\n" + json + "\n\n"
+                    }
+
+                    let encoder = JSONEncoder()
+                    encoder.outputFormatting = .prettyPrinted
+                    if let data = try? encoder.encode(response), let json = String(data: data, encoding: .utf8) {
+                        self.texts = json + "\n\n\(hostDataString)- - -\n\n" + self.texts
+                    }
+                    self.sendData()
+                    self.dismiss()
+                case .failure(let error):
+                    self.texts = error.localizedDescription + "\n\n- - -\n\n" + self.texts
+                    self.sendData()
+                    self.dismiss()
+                }
+            }
+        } else if let validateIdMatchFaceResult = validateIdMatchFaceResult {
+            validateIdMatchFaceResult.submit { result, hostData in
+                self.navigationItem.leftBarButtonItem = nil
+
+                switch result {
+                case .success(let response):
+                    var hostDataString = ""
+                    if let hostData = hostData,
+                       let data = try? JSONSerialization.data(withJSONObject: hostData, options: [.prettyPrinted]),
+                       let json = String(data: data, encoding: .utf8) {
+                        hostDataString = "Host Data:\n\n" + json + "\n\n"
+                    }
+
+                    let encoder = JSONEncoder()
+                    encoder.outputFormatting = .prettyPrinted
+                    if let data = try? encoder.encode(response), let json = String(data: data, encoding: .utf8) {
+                        self.texts = json + "\n\n\(hostDataString)- - -\n\n" + self.texts
+                    }
+                    self.sendData()
+                    self.dismiss()
+                case .failure(let error):
+                    self.texts = error.localizedDescription + "\n\n- - -\n\n" + self.texts
+                    self.sendData()
+                    self.dismiss()
+                }
+            }
+        } else if let customerEnrollResult = customerEnrollResult {
+            customerEnrollResult.submit { result, hostData in
+                self.navigationItem.leftBarButtonItem = nil
+
+                switch result {
+                case .success(let response):
+                    var hostDataString = ""
+                    if let hostData = hostData,
+                       let data = try? JSONSerialization.data(withJSONObject: hostData, options: [.prettyPrinted]),
+                       let json = String(data: data, encoding: .utf8) {
+                        hostDataString = "Host Data:\n\n" + json + "\n\n"
+                    }
+
+                    let encoder = JSONEncoder()
+                    encoder.outputFormatting = .prettyPrinted
+                    if let data = try? encoder.encode(response), let json = String(data: data, encoding: .utf8) {
+                        self.texts = json + "\n\n\(hostDataString)- - -\n\n" + self.texts
+                    }
+                    self.sendData()
+                    self.dismiss()
+                case .failure(let error):
+                    self.texts = error.localizedDescription + "\n\n- - -\n\n" + self.texts
+                    self.sendData()
+                    self.dismiss()
+                }
+            }
+        } else if let customerEnrollBiometricsResult = customerEnrollBiometricsResult {
+            customerEnrollBiometricsResult.submit { result in
                 self.navigationItem.leftBarButtonItem = nil
 
                 switch result {
@@ -281,12 +373,15 @@ class SuccessViewController: UIViewController {
                     self.dismiss()
                 }
             }
-        } else if let request = customerValidateIdFaceMatchRequest {
-            IDentitySDK.submit(customerValidateIdFaceMatchRequest: request) { result in
+        } else if let customerVerificationResult = customerVerificationResult {
+            customerVerificationResult.submit { result in
                 self.navigationItem.leftBarButtonItem = nil
 
                 switch result {
-                case .success(let response):
+                case .success(var response):
+                    // stub out the base64 image text for logging
+                    response.responseCustomerVerifyData?.extractedPersonalData?.enrolledFaceImage = "..."
+
                     let encoder = JSONEncoder()
                     encoder.outputFormatting = .prettyPrinted
                     if let data = try? encoder.encode(response), let json = String(data: data, encoding: .utf8) {
@@ -300,12 +395,15 @@ class SuccessViewController: UIViewController {
                     self.dismiss()
                 }
             }
-        } else if let request = customerEnrollRequest {
-            IDentitySDK.submit(customerEnrollRequest: request) { result in
+        } else if let customerIdentifyResult = customerIdentifyResult {
+            customerIdentifyResult.submit { result in
                 self.navigationItem.leftBarButtonItem = nil
 
                 switch result {
-                case .success(let response):
+                case .success(var response):
+                    // stub out the base64 image text for logging
+                    response.responseCustomerData?.extractedPersonalData?.enrolledFaceImage = "..."
+
                     let encoder = JSONEncoder()
                     encoder.outputFormatting = .prettyPrinted
                     if let data = try? encoder.encode(response), let json = String(data: data, encoding: .utf8) {
@@ -319,65 +417,8 @@ class SuccessViewController: UIViewController {
                     self.dismiss()
                 }
             }
-        } else if let request = customerEnrollBiometricsRequest {
-            IDentitySDK.submit(customerEnrollBiometricsRequest: request) { result in
-                self.navigationItem.leftBarButtonItem = nil
-
-                switch result {
-                case .success(let response):
-                    let encoder = JSONEncoder()
-                    encoder.outputFormatting = .prettyPrinted
-                    if let data = try? encoder.encode(response), let json = String(data: data, encoding: .utf8) {
-                        self.texts = json + "\n\n- - -\n\n" + self.texts
-                    }
-                    self.sendData()
-                    self.dismiss()
-                case .failure(let error):
-                    self.texts = error.localizedDescription + "\n\n- - -\n\n" + self.texts
-                    self.sendData()
-                    self.dismiss()
-                }
-            }
-        } else if let request = customerVerifyRequest {
-            IDentitySDK.submit(customerVerifyRequest: request) { result in
-                self.navigationItem.leftBarButtonItem = nil
-
-                switch result {
-                case .success(let response):
-                    let encoder = JSONEncoder()
-                    encoder.outputFormatting = .prettyPrinted
-                    if let data = try? encoder.encode(response), let json = String(data: data, encoding: .utf8) {
-                        self.texts = json + "\n\n- - -\n\n" + self.texts
-                    }
-                    self.sendData()
-                    self.dismiss()
-                case .failure(let error):
-                    self.texts = error.localizedDescription + "\n\n- - -\n\n" + self.texts
-                    self.sendData()
-                    self.dismiss()
-                }
-            }
-        } else if let request = customerIdentifyRequest {
-            IDentitySDK.submit(customerIdentifyRequest: request) { result in
-                self.navigationItem.leftBarButtonItem = nil
-
-                switch result {
-                case .success(let response):
-                    let encoder = JSONEncoder()
-                    encoder.outputFormatting = .prettyPrinted
-                    if let data = try? encoder.encode(response), let json = String(data: data, encoding: .utf8) {
-                        self.texts = json + "\n\n- - -\n\n" + self.texts
-                    }
-                    self.sendData()
-                    self.dismiss()
-                case .failure(let error):
-                    self.texts = error.localizedDescription + "\n\n- - -\n\n" + self.texts
-                    self.sendData()
-                    self.dismiss()
-                }
-            }
-        } else if let request = customerLiveCheckRequest {
-            IDentitySDK.submit(customerLiveCheckRequest: request) { result in
+        } else if let liveFaceCheckResult = liveFaceCheckResult {
+            liveFaceCheckResult.submit { result in
                 self.navigationItem.leftBarButtonItem = nil
 
                 switch result {
@@ -406,13 +447,15 @@ class SuccessViewController: UIViewController {
   
   private func display(detectedData data: DetectedData, type: String) {
         texts += type + "\n\n"
-
+        mutableDictionary["type"] = type
+    
         texts += "Photo Present: "
         texts += data.shouldHavePhoto ? (data.isPhotoPresent ? "YES" : "NO") : "N/A"
         texts += "\n\n"
-
+        mutableDictionary["Photo Present"] = data.shouldHavePhoto ? (data.isPhotoPresent ? "YES" : "NO") : "N/A"
+    
         texts += "MRZ Present: "
-        if data.shouldHaveMrz {
+        if data.shouldHaveMrz || data.mrz != nil {
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .short
             dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
@@ -424,16 +467,19 @@ class SuccessViewController: UIViewController {
                let json = String(data: jsonData, encoding: .utf8) {
                texts += "\n\n"
                texts += json
+               mutableDictionary["MRZ Present"] = json
             } else {
                texts += "NO"
+               mutableDictionary["MRZ Present"] = "NO"
             }
         } else {
            texts += "N/A"
+           mutableDictionary["MRZ Present"] = "N/A"
         }
         texts += "\n\n"
 
         texts += "Barcode Present: "
-        if data.shouldHaveBarcode {
+        if data.shouldHaveBarcode || data.barcode != nil {
             if let barcode = data.barcode {
                texts += "\n\n"
                 for key in barcode.keys {
@@ -441,11 +487,14 @@ class SuccessViewController: UIViewController {
                       texts += "\(key): \(value)\n"
                     }
                 }
+                mutableDictionary["Barcode Present"] = data.barcode
             } else {
                texts += "NO"
+               mutableDictionary["Barcode Present"] = "NO"
             }
         } else {
            texts += "N/A"
+           mutableDictionary["Barcode Present"] = "N/A"
         }
     }
 
@@ -457,7 +506,7 @@ class SuccessViewController: UIViewController {
         textObfuscated += "\n\n"
 
         textObfuscated += "MRZ Present: "
-        if data.shouldHaveMrz {
+        if data.shouldHaveMrz || data.mrz != nil {
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .short
             dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
@@ -478,7 +527,7 @@ class SuccessViewController: UIViewController {
         textObfuscated += "\n\n"
 
         textObfuscated += "Barcode Present: "
-        if data.shouldHaveBarcode {
+        if data.shouldHaveBarcode || data.barcode != nil {
             if let barcode = data.barcode {
                 textObfuscated += "\n\n"
                 for key in barcode.keys {
