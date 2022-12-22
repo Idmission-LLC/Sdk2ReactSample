@@ -369,6 +369,8 @@ public class IDMissionSDK extends ReactContextBaseJavaModule implements Activity
                 extractedIdData.put("nationality",eid.getNationality());
                 extractedIdData.put("negativeDBMatchFound",eid.getNegativeDBMatchFound());
                 extractedIdData.put("validIdNumber",eid.getValidIdNumber());
+                extractedIdData.put("idProcessImageFront",eid.getIdProcessImageFront());
+                extractedIdData.put("idProcessImageBack",eid.getIdProcessImageBack());
                 responseCustomerData.put("extractedIdData",extractedIdData);
             }catch(Exception e){}
 
@@ -633,6 +635,8 @@ public class IDMissionSDK extends ReactContextBaseJavaModule implements Activity
                 extractedIdData.put("nationality",eid.getNationality());
                 extractedIdData.put("negativeDBMatchFound",eid.getNegativeDBMatchFound());
                 extractedIdData.put("validIdNumber",eid.getValidIdNumber());
+                extractedIdData.put("idProcessImageFront",eid.getIdProcessImageFront());
+                extractedIdData.put("idProcessImageBack",eid.getIdProcessImageBack());
                 responseCustomerVerifyData.put("extractedIdData",extractedIdData);
             }catch(Exception e){}
 
