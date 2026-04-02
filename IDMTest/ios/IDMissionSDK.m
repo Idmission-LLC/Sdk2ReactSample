@@ -21,12 +21,21 @@ static IDMissionSDK *gInstance = NULL;
 
 }
 
-RCT_EXPORT_METHOD(initializeSDK:(NSString *)loginId password:(NSString *)password merchantid:(NSString *)merchantid myCallback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(initializeSDK:(NSString *)apiBaseUrl authUrl:(NSString *)authUrl debug:(NSString *)debug accessToken:(NSString *)accessToken)
 {
   UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
   gInstance = self;
   dispatch_async(dispatch_get_main_queue(), ^{
     [rootViewController viewDidLoad];
+    id objects[] = { apiBaseUrl, authUrl, debug, accessToken };
+    id keys[] = { @"apiBaseUrl", @"authUrl", @"debug", @"accessToken"};
+    NSUInteger count = sizeof(objects) / sizeof(id);
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects
+                                                           forKeys:keys
+                                                             count:count];
+    
+    IDentitySDKHelper *client = [IDentitySDKHelper new];
+    [client initializeSDKWithData:dictionary instances:rootViewController];
   });
 }
 
@@ -97,6 +106,16 @@ RCT_EXPORT_METHOD(serviceID660)
   dispatch_async(dispatch_get_main_queue(), ^{
     IDentitySDKHelper *client = [IDentitySDKHelper new];
     [client startLiveFaceChecksWithInstances: rootViewController];
+  });
+}
+
+RCT_EXPORT_METHOD(submitResult)
+{
+  UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    IDentitySDKHelper *client = [IDentitySDKHelper new];
+    [client submitResultWithInstances:rootViewController];
   });
 }
 

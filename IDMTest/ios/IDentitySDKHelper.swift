@@ -1,52 +1,27 @@
-//
-//  IDentitySDKHelper.swift
-//  IDMTest
-//
-//  Created by Pranjal Lamba on 29/11/21.
-//
-
 import Foundation
-import IDentitySDK
-import IDCapture
-import SelfieCapture
+import IDentityMediumSDK
+import SelfieCaptureMedium
+import IDCaptureMedium
 
 class IDentitySDKHelper : NSObject{
   
-  @IBAction func initializeSDK(){
-
-    IDentitySDK.templateURL = UserDefaults.templateURL
-    IDentitySDK.modelURL = UserDefaults.modelURL
-    IDentitySDK.apiBaseURL = UserDefaults.apiBaseURL
-
-    IDCapture.realnessThreshold = UserDefaults.realnessThreshold
-    IDCapture.frontDocumentConfidence = UserDefaults.frontDocumentConfidence
-    IDCapture.backDocumentConfidence = UserDefaults.backDocumentConfidence
-    IDCapture.lowerWidthThresholdTolerance = UserDefaults.lowerWidthThresholdTolerance
-    IDCapture.upperWidthThresholdTolerance = UserDefaults.upperWidthThresholdTolerance
-    IDCapture.faceMatchMax = UserDefaults.faceMatchMax
-
-    SelfieCapture.minFaceWidth = UserDefaults.minFaceWidth
-    SelfieCapture.eyeOpenProbability = UserDefaults.eyeOpenProbability
-    SelfieCapture.minHeadEulerAngle = UserDefaults.minHeadEulerAngle
-    SelfieCapture.maxHeadEulerAngle = UserDefaults.maxHeadEulerAngle
-    SelfieCapture.minRelativeNoseHeight = UserDefaults.minRelativeNoseHeight
-    SelfieCapture.maxRelativeNoseHeight = UserDefaults.maxRelativeNoseHeight
-    SelfieCapture.labelsConfidenceThreshold = UserDefaults.labelsConfidenceThreshold
-    SelfieCapture.faceMaskProbabilityThreshold = UserDefaults.faceMaskProbabilityThreshold
-    SelfieCapture.liveFaceProbabilityThreshold = UserDefaults.liveFaceProbabilityThreshold
-
-    let loginId = UserDefaults.loginId
-    let password = UserDefaults.password
-    let merchantId = UserDefaults.merchantId
+  @IBAction func initializeSDK(data: NSDictionary, instances: UIViewController) {
     
-    IDentitySDK.initializeSDK(loginId: loginId, password: password, merchantId: merchantId) { error in
+    let apiBaseUrl:String = data["apiBaseUrl"] as! String
+    let authUrl:String = data["authUrl"] as! String
+    let debug:String = data["debug"] as! String
+    let accessToken:String = data["accessToken"] as! String
+    
+    IDentitySDK.apiBaseUrl = UserDefaults.apiBaseURL
+    IDentitySDK.initializeSDK(language: UserDefaults.SDKlanguage, isUpdateModelsData: UserDefaults.isUpdateModelData, accessToken: UserDefaults.accessToken) { error in
         if let error = error {
             print("!!! initialize SDK ERROR: \(error.localizedDescription)")
         } else {
             print("!!! initialize SDK SUCCESS")
+            self.sendData(text: "SDK successfully initialized")
         }
     }
-  }
+}
   
   // 20 - ID Validation
   @IBAction func startIDValidations(instances: UIViewController) {
@@ -81,5 +56,15 @@ class IDentitySDKHelper : NSObject{
   // 660 - Live Face Check
   @IBAction func startLiveFaceChecks(instances: UIViewController) {
     ViewController().startLiveFaceCheck(instance: instances);
+  }
+  
+  @IBAction func submitResult(instances: UIViewController) {
+    ViewController().submitResult(instance: instances);
+  }
+  
+  private func sendData(text: String) {
+    let dict2:NSMutableDictionary? = ["data" : text ]
+    let iDMissionSDK = IDMissionSDK()
+    iDMissionSDK.getEvent2("DataCallback", dict: dict2 ?? ["data" : "error"])
   }
 }

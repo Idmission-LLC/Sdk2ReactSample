@@ -1,14 +1,16 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeBaseProvider } from 'native-base';
 import ResultScreen from './Home/ResultScreen'
 import Home from './Home/Home'
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function App() {
   return (
-    <NavigationContainer >
+   <NativeBaseProvider>
+     <NavigationContainer >
       <Stack.Navigator screenOptions={{ initialRouteName: "Home", headerShown: false }}>
      
         <Stack.Screen name="Home" component={Home} />
@@ -16,6 +18,7 @@ function App() {
       
       </Stack.Navigator>
     </NavigationContainer>
+   </NativeBaseProvider>
   );
 }
 

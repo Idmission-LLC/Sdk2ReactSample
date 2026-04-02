@@ -1,22 +1,17 @@
 import React from 'react'
 import { View, TouchableOpacity, Text, Image, Platform } from 'react-native'
-import { Container, Header, Content, Picker } from "native-base";
+import { Container, ScrollView, Picker, NativeBaseProvider, Center, VStack, Pressable   } from "native-base";
 import * as constant from '../Constant'
 import styles from '../Styles'
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { TextInput } from "react-native";
 import { LogBox } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs(); 
 const { IDMissionSDK } = NativeModules;
-
-var initialize_url = "https://demo.idmission.com/";
-var url = "https://apidemo.idmission.com/";
-var login_id = "";
-var password = "";
-var merchant_id = "";
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -25,6 +20,10 @@ export default class Home extends React.Component {
             selected: '',
             images: '',
             uniqueCustomerNumber: '',
+            apiBaseUrl: '',
+            authUrl: '',
+            debug: '',
+            accessToken: '',
             event: [
                 "Select Feature"
             ]
@@ -32,15 +31,6 @@ export default class Home extends React.Component {
     }
 
     componentDidMount() {
-
-        IDMissionSDK.initializeSDK(
-            initialize_url,
-            url,
-            login_id,
-            password,
-            merchant_id
-        );
-
         const eventEmitter = new NativeEventEmitter(IDMissionSDK);
 
         eventEmitter.addListener('onSessionConnect', (event) => { });
@@ -51,6 +41,15 @@ export default class Home extends React.Component {
             this.props.navigation.navigate("ResultScreen", { eventResponse: event, eventName: "Data" })
         });
 
+    }
+
+    onInit = () => {
+        IDMissionSDK.initializeSDK(
+            this.state.apiBaseUrl,
+            this.state.authUrl,
+            this.state.debug,
+            this.state.accessToken
+        );
     }
 
     onServiceID20 = () => {
@@ -85,182 +84,96 @@ export default class Home extends React.Component {
         IDMissionSDK.submitResult();
     }
 
-    press1 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 1;
+    saveUniqueCustomerNumber = (text) => {
         this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
-        })
-    }
-
-    press2 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 2;
-        this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
+          uniqueCustomerNumber: text
         })        
     }
 
-    press3 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 3;
+    saveApiBaseUrl = (text) => {
         this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
+          apiBaseUrl: text
         })        
     }
 
-    press4 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 4;
+    saveAuthUrl = (text) => {
         this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
+          authUrl: text
         })        
     }
 
-    press5 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 5;
+    saveDebug = (text) => {
         this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
+          debug: text
         })        
-    }
+    }       
 
-    press6 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 6;
+    saveAccessToken = (text) => {
         this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
+          accessToken: text
         })        
-    }    
+    }           
 
-    press7 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 7;
-        this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
-        })        
-    }
-
-    press8 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 8;
-        this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
-        })        
-    }
-
-    press9 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 9;
-        this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
-        })        
-    }    
-
-    press0 = () => {
-        this.state.uniqueCustomerNumber = this.state.uniqueCustomerNumber + 0;
-        this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
-        })        
-    }
-
-    pressDel = () => {
-        this.state.uniqueCustomerNumber = '';
-        this.setState({
-          uniqueCustomerNumber: this.state.uniqueCustomerNumber
-        })        
-    }
+  
 
     render() {
         return (
-            <Container>
-			
-                <Content contentContainerStyle={{ justifyContent: 'center' }}>
-				    <Content contentContainerStyle={{ justifyContent: 'flex-start', flexDirection: 'row', marginLeft: 25, marginRight: 15, padding:10 }}>
-                        
-                        <Text style={styles.mainText}>Unique Customer Number - </Text>
+            <NativeBaseProvider>
+            <SafeAreaView>
+             <Container>
+                
+                <ScrollView contentContainerStyle={{ justifyContent: 'center', margin: 20 }}>
+                   
+                   <TextInput style={{borderBottomWidth: 1,fontSize: constant.smallFont}} placeholder="Api Base Url" onChangeText={(text) => { this.saveApiBaseUrl(text) }}/>
 
-                        <Text style={styles.mainText}>{this.state.uniqueCustomerNumber}</Text>
+                   <TextInput style={{borderBottomWidth: 1,fontSize: constant.smallFont}} placeholder="Auth Url" onChangeText={(text) => { this.saveAuthUrl(text) }}/>
 
-                    </Content>
+                   <TextInput style={{borderBottomWidth: 1,fontSize: constant.smallFont}} placeholder="Debug" onChangeText={(text) => { this.saveDebug(text) }}/>
 
-                    <Content contentContainerStyle={{ justifyContent: 'flex-start', flexDirection: 'row', marginLeft: 15, marginRight: 15, padding:10 }}>
+                   <TextInput style={{borderBottomWidth: 1,fontSize: constant.smallFont}} placeholder="Access Token" onChangeText={(text) => { this.saveAccessToken(text) }}/>
 
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press1() }}>
-                            <Text style={styles.keyButtonText}>1</Text>
-                        </TouchableOpacity>
+                   <TextInput style={{borderBottomWidth: 1,fontSize: constant.smallFont}} placeholder="Unique Customer Number" onChangeText={() => { this.saveUniqueCustomerNumber() }}/>
 
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press2() }}>
-                            <Text style={styles.keyButtonText}>2</Text>
-                        </TouchableOpacity>
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onInit() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>Initialize</Text>
+                    </Pressable>
 
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press3() }}>
-                            <Text style={styles.keyButtonText}>3</Text>
-                        </TouchableOpacity>
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onServiceID20() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>ID Validation</Text>
+                    </Pressable>
 
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press4() }}>
-                            <Text style={styles.keyButtonText}>4</Text>
-                        </TouchableOpacity>                        
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onServiceID10() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>ID Validation and Match Face</Text>
+                    </Pressable>
 
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press5() }}>
-                            <Text style={styles.keyButtonText}>5</Text>
-                        </TouchableOpacity>
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onServiceID50() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>ID Validation and Customer Enroll</Text>
+                    </Pressable>
 
-                    </Content>
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onServiceID175() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>Customer Enroll Biometrics</Text>
+                    </Pressable>
 
-                    <Content contentContainerStyle={{ justifyContent: 'flex-start', flexDirection: 'row', marginLeft: 15, marginRight: 15, padding:10 }}>
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onServiceID105() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>Customer Verification</Text>
+                    </Pressable>
 
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press6() }}>
-                            <Text style={styles.keyButtonText}>6</Text>
-                        </TouchableOpacity> 
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onServiceID185() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>Identify Customer</Text>
+                    </Pressable>                    
 
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press7() }}>
-                            <Text style={styles.keyButtonText}>7</Text>
-                        </TouchableOpacity>
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onServiceID660() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>Live Face Check</Text>
+                    </Pressable>                
 
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press8() }}>
-                            <Text style={styles.keyButtonText}>8</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.press9() }}>
-                            <Text style={styles.keyButtonText}>9</Text>
-                        </TouchableOpacity>
-
-                         <TouchableOpacity style={styles.keyButton} onPress={() => { this.press0() }}>
-                            <Text style={styles.keyButtonText}>0</Text>
-                        </TouchableOpacity>   
-
-                        <TouchableOpacity style={styles.keyButton} onPress={() => { this.pressDel() }}>
-                            <Text style={styles.keyButtonText}>Del</Text>
-                        </TouchableOpacity>            
-
-                    </Content>
-
-                    <TouchableOpacity style={styles.startButton} onPress={() => { this.onServiceID20() }}>
-                        <Text style={styles.startButtonText}>ID Validation</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.startButton} onPress={() => { this.onServiceID10() }}>
-                        <Text style={styles.startButtonText}>ID Validation and Match Face</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.startButton} onPress={() => { this.onServiceID50() }}>
-                        <Text style={styles.startButtonText}>ID Validation and Customer Enroll</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.startButton} onPress={() => { this.onServiceID175() }}>
-                        <Text style={styles.startButtonText}>Customer Enroll Biometrics</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.startButton} onPress={() => { this.onServiceID105() }}>
-                        <Text style={styles.startButtonText}>Customer Verification</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.startButton} onPress={() => { this.onServiceID185() }}>
-                        <Text style={styles.startButtonText}>Identify Customer</Text>
-                    </TouchableOpacity>                    
-
-                    <TouchableOpacity style={styles.startButton} onPress={() => { this.onServiceID660() }}>
-                        <Text style={styles.startButtonText}>Live Face Check</Text>
-                    </TouchableOpacity>                
-
-                    <TouchableOpacity style={styles.startButton} onPress={() => { this.onSubmit() }}>
-                        <Text style={styles.startButtonText}>Submit</Text>
-                    </TouchableOpacity>  
-
-                </Content>
+                    <Pressable style={{backgroundColor: '#00a5a4', borderWidth: 2, marginTop: 10}} onPress={() => { this.onSubmit() }}>
+                        <Text style={{fontSize: constant.smallFont, padding: 10}}>Submit</Text>
+                    </Pressable>  
+                </ScrollView>
+                
             </Container>
+            </SafeAreaView>
+            </NativeBaseProvider>
         )
     }
 }

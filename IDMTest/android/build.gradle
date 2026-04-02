@@ -1,80 +1,21 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     ext {
-        buildToolsVersion = "30.0.2"
-        minSdkVersion = 21
-        compileSdkVersion = 32
-        targetSdkVersion = 32
-        ndkVersion = "21.4.7075529"
-        kotlin_version = "1.5.31"
-        componentVersion = "2.0.0"
-        dokka_version = "1.5.0"
+        buildToolsVersion = "36.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 36
+        targetSdkVersion = 36
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.1.20"
     }
     repositories {
         google()
         mavenCentral()
-
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
 }
 
-allprojects {
-    repositories {
-        exclusiveContent {
-            // We get React Native's Android binaries exclusively through npm,
-            // from a local Maven repo inside node_modules/react-native/.
-            // (The use of exclusiveContent prevents looking elsewhere like Maven Central
-            // and potentially getting a wrong version.)
-            filter {
-                includeGroup "com.facebook.react"
-            }
-            forRepository {
-                maven {
-                    url "$rootDir/../node_modules/react-native/android"
-                }
-            }
-        }
-        mavenLocal()
-        maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url("$rootDir/../node_modules/react-native/android")
-        }
-        maven {
-            // Android JSC is installed from npm
-            url("$rootDir/../node_modules/jsc-android/dist")
-        }
-
-        google()
-        mavenCentral()
-        jcenter()
-        maven { url 'https://www.jitpack.io' }
-        maven {
-            url "https://gitlab.idmission.com/api/v4/projects/220/packages/maven"
-            name "GitLab"
-            credentials(HttpHeaderCredentials) {
-                name = "Private-Token"
-                value = "WESesyuSD9fQeqNEyig6"
-            }
-            authentication {
-                header(HttpHeaderAuthentication)
-            }
-        }
-    }
-
-    project.ext {
-        defaultBuildToolsVersion="30.0.3" //String
-        defaultMinSdkVersion=23 //Integer - Minimum requirement is Android 4.4
-        defaultTargetSdkVersion=31 //Integer - We ALWAYS target the latest by default
-        defaultCompileSdkVersion=31 //Integer - We ALWAYS compile with the latest by default
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+apply plugin: "com.facebook.react.rootproject"

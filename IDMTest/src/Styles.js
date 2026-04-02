@@ -51,13 +51,16 @@ const styles = StyleSheet.create({
         backgroundColor: constant.baseColor,
 
     },
+    buttonText: {
+        fontSize: 40
+    },
     startButtonText: {
         fontSize: constant.fontSize1,
         color: constant.whiteColor
     },
     mainText: {
         color: constant.blackColor,
-        fontSize: constant.fontSize1
+        fontSize: constant.smallFont
     },
     keyButton: {
         justifyContent: 'center',
