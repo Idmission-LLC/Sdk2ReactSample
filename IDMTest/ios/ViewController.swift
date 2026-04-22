@@ -25,6 +25,8 @@ class ViewController: UIViewController {
         // start ID capture, presenting it from this view controller
       var commonCustomerData = CommonCustomerDataRequest()
       var options = AdditionalCustomerWFlagCommonData()
+      options.sendInputImagesInResponse = .no
+      options.sendProcessedImagesInResponse = .no
       IDentitySDK.idValidation(from: instance, customerDataOptions: commonCustomerData,options: options, captureBack: CaptureBack.auto) { result1 in
           switch result1 {
           case .success(let validateIdResult):
@@ -48,7 +50,8 @@ class ViewController: UIViewController {
     func startIDValidationAndMatchFace(instance: UIViewController) {
       var commonCustomerData = CommonCustomerDataRequest()
       var options = AdditionalCustomerWFlagCommonData()
-      
+      options.sendInputImagesInResponse = .no
+      options.sendProcessedImagesInResponse = .no
       IDentitySDK.idValidationAndMatchFace(from: instance, customerDataOptions: commonCustomerData,options: options, captureBack: CaptureBack.auto) { result1 in
           switch result1 {
           case .success(let validateIdMatchFaceResult):
@@ -72,7 +75,8 @@ class ViewController: UIViewController {
       func startIDValidationAndCustomerEnroll(uniqueNumber: String, instance: UIViewController) {
         let personalData = PersonalCustomerCommonRequestEnrollData(uniqueNumber: uniqueNumber)
         var options = AdditionalCustomerWFlagCommonData()
-  
+        options.sendInputImagesInResponse = .no
+        options.sendProcessedImagesInResponse = .no
         IDentitySDK.idValidationAndCustomerEnroll(from: instance, personalData: personalData, options: options) { result1 in
             switch result1 {
             case .success(let customerEnrollResult):
@@ -317,6 +321,7 @@ class ViewController: UIViewController {
       let dict2:NSMutableDictionary? = ["data" : text ]
       let iDMissionSDK = IDMissionSDK()
       iDMissionSDK.getEvent2("DataCallback", dict: dict2 ?? ["data" : "error"])
+      //iDMissionSDK.getEvent2("DataCallback", dict: dict2 ?? ["data" : "error"])
     }
   
   func emptyResults(){

@@ -23,13 +23,9 @@ target 'IDMTest' do
   
   pod 'IDentityMediumSDK2.0'
   pod 'IDentityMediumModels'
-  pod 'TensorFlowLiteSwift', '~> 2.7.0', :build_type => :static_framework
-  pod 'GoogleMLKit/TextRecognition', :build_type => :dynamic_framework
-  pod 'GoogleMLKit/FaceDetection', :build_type => :dynamic_framework
-  pod 'GoogleMLKit/ImageLabeling', :build_type => :dynamic_framework
   pod 'GZIP', :build_type => :dynamic_framework
-  pod 'OpenSSL-Universal', :git => 'https://github.com/krzyzanowskim/OpenSSL.git', :tag => '1.1.2301'
-
+  pod 'GoogleMLKit/TextRecognition', :build_type => :dynamic_framework
+  
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
