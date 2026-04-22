@@ -16,20 +16,32 @@ export const borderWidth2 = 0.8;
 export const borderWidth3 = 1;
 
 //Colors
-export const baseColor ='#24B8FE'
-export const baseColor1='#08A1CD'
-export const blueColor ='#2196F3'
-export const darkColor='#3c3c3c';
-export const blackColor ='black';
-export const grayColor='gray';
-export const lightGrayColor='lightgray';
-export const whiteColor ='white';
-export const yellowColor = "#FEAA24";
-export const greenColor='#24B824';
-export const redColor="#B0120C";
-export const cyanColor='#1C9BA0';
-export const darkPink='	#FF69B4';
-export const ghostWhite='#F6F6F8'
+//Colors
+export const primary = '#0891B2'; // Cyan 600
+export const secondary = '#0E7490'; // Cyan 700
+export const slate = '#64748B'; // Slate 500
+export const slateDark = '#334155'; // Slate 700
+export const slateLight = '#F1F5F9'; // Slate 100
+export const background = '#F8FAFC'; // Slate 50
+export const white = '#FFFFFF';
+export const black = '#0F172A'; // Slate 900
+export const error = '#EF4444'; // Red 500
+export const success = '#10B981'; // Emerald 500
+
+export const baseColor = primary;
+export const baseColor1 = secondary;
+export const blueColor = '#3B82F6';
+export const darkColor = slateDark;
+export const blackColor = black;
+export const grayColor = slate;
+export const lightGrayColor = '#CBD5E1'; // Slate 300
+export const whiteColor = white;
+export const yellowColor = "#F59E0B";
+export const greenColor = success;
+export const redColor = error;
+export const cyanColor = primary;
+export const darkPink = '#DB2777';
+export const ghostWhite = background;
 
 
  //Font

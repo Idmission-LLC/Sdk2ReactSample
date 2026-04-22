@@ -85,6 +85,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        ndk {
+            // Only include these architectures in the build
+            abiFilters "arm64-v8a"
+        }
     }
     signingConfigs {
         debug {
@@ -111,9 +115,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    //implementation 'com.idmission.sdk2:idmission-sdk:11.1.01.2.04'
-    implementation 'com.idmission.sdk2:idmission-mediumsdk:11.1.05.2.29'
-
+    implementation 'com.idmission.sdk2:idmission-mediumsdk:11.1.07.2.23'
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {
