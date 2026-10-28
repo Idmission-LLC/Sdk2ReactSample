@@ -1,6 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity, Text, Image, Platform, StyleSheet as RNStyleSheet, Modal, ActivityIndicator } from 'react-native'
-import { ScrollView, Picker, NativeBaseProvider, Center, VStack, Pressable, Spinner } from "native-base";
+import { View, TouchableOpacity, Text, Image, Platform, StyleSheet as RNStyleSheet, Modal, ActivityIndicator, ScrollView } from 'react-native'
 import * as constant from '../Constant'
 import styles from '../Styles'
 import { NativeModules, NativeEventEmitter } from 'react-native';
@@ -137,7 +136,7 @@ export default class Home extends React.Component {
         >
             <View style={styles.loaderOverlay}>
                 <View style={styles.loaderContainer}>
-                    <Spinner size="lg" color={constant.primary} />
+                    <ActivityIndicator size="large" color={constant.primary} />
                 </View>
             </View>
         </Modal>
@@ -172,7 +171,7 @@ export default class Home extends React.Component {
 
     render() {
         return (
-            <NativeBaseProvider>
+            <>
                 <SafeAreaView style={styles.container}>
                     <View style={styles.header}>
                         <Text style={styles.headerTitle}>Identity React</Text>
@@ -216,7 +215,7 @@ export default class Home extends React.Component {
                         </View>
                     </ScrollView>
                 </SafeAreaView>
-            </NativeBaseProvider>
+            </>
         )
     }
 }

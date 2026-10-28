@@ -1,6 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity, Text, Image } from 'react-native'
-import { Container, HStack, Button, Center, VStack, Pressable, Box, NativeBaseProvider, ScrollView } from "native-base";
+import { View, TouchableOpacity, Text, Image, ScrollView } from 'react-native'
 import * as constant from '../Constant'
 import styles from '../Styles'
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -42,7 +41,7 @@ export default class ResultScreen extends React.Component {
         const formattedData = this.getFormattedData(eventName, eventResponse);
 
         return (
-            <NativeBaseProvider>
+            <>
                 <SafeAreaView style={styles.container}>
                     <View style={styles.header}>
                         <TouchableOpacity
@@ -81,7 +80,7 @@ export default class ResultScreen extends React.Component {
                         </View>
                     </ScrollView>
                 </SafeAreaView>
-            </NativeBaseProvider>
+            </>
         )
     }
 }

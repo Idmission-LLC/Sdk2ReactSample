@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import * as constant from './Constant'
 const styles = StyleSheet.create({
 
